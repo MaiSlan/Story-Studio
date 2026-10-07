@@ -1,0 +1,150 @@
+{
+  "id": "sample-wukong-and-the-moon",
+  "track": "pinyin",
+  "title": {
+    "primary": "Wùkōng hé yuèliang",
+    "hanzi": "悟空和月亮",
+    "english": "Wukong and the Moon"
+  },
+  "lines": [
+    {
+      "n": 1,
+      "primary": "Hěn jiǔ hěn jiǔ yǐqián, shān shàng yǒu yì zhī shíhóu.",
+      "hanzi": "很久很久以前，山上有一只石猴。",
+      "english": "A very long time ago, a stone monkey lived on a mountain."
+    },
+    {
+      "n": 2,
+      "primary": "Tā jiào Sūn Wùkōng.",
+      "hanzi": "他叫孙悟空。",
+      "english": "His name was Sun Wukong."
+    },
+    {
+      "n": 3,
+      "primary": "Yì tiān wǎnshang, yuèliang hěn dà, hěn liàng.",
+      "hanzi": "一天晚上，月亮很大，很亮。",
+      "english": "One night, the moon was big and bright."
+    },
+    {
+      "n": 4,
+      "primary": "Shān xià yǒu yì kǒu jǐng.",
+      "hanzi": "山下有一口井。",
+      "english": "At the foot of the hill there was a well."
+    },
+    {
+      "n": 5,
+      "primary": "Wùkōng dītóu yí kàn, yuèliang zài shuǐ lǐ.",
+      "hanzi": "悟空低头一看，月亮在水里。",
+      "english": "Wukong lowered his head and looked: the moon was in the water."
+    },
+    {
+      "n": 6,
+      "primary": "“Yuèliang diào jìn jǐng lǐ le!” tā dà jiào.",
+      "hanzi": "“月亮掉进井里了！”他大叫。",
+      "english": "“The moon has fallen into the well!” he cried."
+    },
+    {
+      "n": 7,
+      "primary": "Tā xiǎng bǎ yuèliang ná chūlái.",
+      "hanzi": "他想把月亮拿出来。",
+      "english": "He wanted to take the moon out."
+    },
+    {
+      "n": 8,
+      "primary": "Tā zhǎo lái yì gēn chángcháng de gùnzi.",
+      "hanzi": "他找来一根长长的棍子。",
+      "english": "He found a long stick."
+    },
+    {
+      "n": 9,
+      "primary": "Tā bǎ gùnzi shēn jìn jǐng lǐ.",
+      "hanzi": "他把棍子伸进井里。",
+      "english": "He put the stick into the well."
+    },
+    {
+      "n": 10,
+      "primary": "Shuǐ dòng le, yuèliang suì le.",
+      "hanzi": "水动了，月亮碎了。",
+      "english": "The water moved, and the moon broke into pieces."
+    },
+    {
+      "n": 11,
+      "primary": "Wùkōng děng le hěn jiǔ.",
+      "hanzi": "悟空等了很久。",
+      "english": "Wukong waited a long time."
+    },
+    {
+      "n": 12,
+      "primary": "Shuǐ mànmàn de bú dòng le.",
+      "hanzi": "水慢慢地不动了。",
+      "english": "Slowly the water became still."
+    },
+    {
+      "n": 13,
+      "primary": "Yuèliang yòu huílái le, háishi nàme yuán.",
+      "hanzi": "月亮又回来了，还是那么圆。",
+      "english": "The moon came back, as round as before."
+    },
+    {
+      "n": 14,
+      "primary": "Wùkōng kànzhe shuǐ lǐ de yuèliang, xiào le.",
+      "hanzi": "悟空看着水里的月亮，笑了。",
+      "english": "Wukong looked at the moon in the water and smiled."
+    },
+    {
+      "n": 15,
+      "primary": "Tā bú zài qù zhuā yuèliang le.",
+      "hanzi": "他不再去抓月亮了。",
+      "english": "He did not try to catch the moon again."
+    },
+    {
+      "n": 16,
+      "primary": "Tiān shàng yǒu yí gè, shuǐ lǐ yě yǒu yí gè.",
+      "hanzi": "天上有一个，水里也有一个。",
+      "english": "One in the sky, one in the water."
+    },
+    {
+      "n": 17,
+      "primary": "Nǎ yí gè shì zhēn de?",
+      "hanzi": "哪一个是真的？",
+      "english": "Which one is real?"
+    },
+    {
+      "n": 18,
+      "primary": "Wùkōng bù shuōhuà.",
+      "hanzi": "悟空不说话。",
+      "english": "Wukong said nothing."
+    },
+    {
+      "n": 19,
+      "primary": "Fēng chuī guòlái, shān hěn ānjìng.",
+      "hanzi": "风吹过来，山很安静。",
+      "english": "The wind blew, and the mountain was quiet."
+    }
+  ],
+  "level": 2,
+  "length": "short",
+  "target_lines": 19,
+  "topic": "Sun Wukong and the moon's reflection in a well",
+  "voice": "ancient_tale",
+  "source_mode": "myth",
+  "notes": "",
+  "synopsis": "Wukong tries to pull the moon out of a well and learns to leave a reflection alone.",
+  "characters": [
+    {
+      "english": "Sun Wukong",
+      "hanzi": "孙悟空",
+      "primary": "Sūn Wùkōng"
+    },
+    {
+      "english": "Wukong",
+      "hanzi": "悟空",
+      "primary": "Wùkōng"
+    }
+  ],
+  "provider": "Hand-written sample (Claude)",
+  "model": "-",
+  "created": "2026-10-07T15:14:03+02:00",
+  "updated": "2026-10-07T15:14:03+02:00",
+  "usage": {}
+}

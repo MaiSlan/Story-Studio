@@ -1,0 +1,114 @@
+{
+  "id": "sample-roland-and-the-horn",
+  "track": "french",
+  "title": {
+    "primary": "Roland et le cor",
+    "hanzi": "罗兰与号角",
+    "english": "Roland and the Horn"
+  },
+  "lines": [
+    {
+      "n": 1,
+      "primary": "Charlemagne est le grand roi des Francs.",
+      "hanzi": "查理曼是法兰克人的大王。",
+      "english": "Charlemagne is the great king of the Franks."
+    },
+    {
+      "n": 2,
+      "primary": "Il veut rentrer en France avec son armée.",
+      "hanzi": "他想带着军队回法国。",
+      "english": "He wants to go back to France with his army."
+    },
+    {
+      "n": 3,
+      "primary": "Son neveu Roland garde les montagnes.",
+      "hanzi": "他的外甥罗兰守着群山。",
+      "english": "His nephew Roland guards the mountains."
+    },
+    {
+      "n": 4,
+      "primary": "Roland a une épée très célèbre.",
+      "hanzi": "罗兰有一把很有名的剑。",
+      "english": "Roland has a very famous sword."
+    },
+    {
+      "n": 5,
+      "primary": "Un jour, des ennemis arrivent dans la vallée.",
+      "hanzi": "有一天，敌人来到了山谷。",
+      "english": "One day, enemies arrive in the valley."
+    },
+    {
+      "n": 6,
+      "primary": "Ils sont très nombreux.",
+      "hanzi": "他们人很多。",
+      "english": "There are very many of them."
+    },
+    {
+      "n": 7,
+      "primary": "Son ami Olivier lui dit : « Sonne du cor ! »",
+      "hanzi": "他的朋友奥利维耶对他说：“吹号角吧！”",
+      "english": "His friend Olivier says to him: “Blow your horn!”"
+    },
+    {
+      "n": 8,
+      "primary": "Roland répond : « Non, pas encore. »",
+      "hanzi": "罗兰回答：“不，还不到时候。”",
+      "english": "Roland answers: “No, not yet.”"
+    },
+    {
+      "n": 9,
+      "primary": "Le combat est long et dur.",
+      "hanzi": "战斗又长又艰难。",
+      "english": "The fight is long and hard."
+    },
+    {
+      "n": 10,
+      "primary": "À la fin, Roland sonne du cor.",
+      "hanzi": "最后，罗兰吹响了号角。",
+      "english": "In the end, Roland blows his horn."
+    },
+    {
+      "n": 11,
+      "primary": "Le son voyage jusqu’au roi, très loin.",
+      "hanzi": "号角声一直传到很远很远的国王那里。",
+      "english": "The sound travels to the king, far away."
+    },
+    {
+      "n": 12,
+      "primary": "Charlemagne revient, mais il est trop tard.",
+      "hanzi": "查理曼赶回来了，可是已经太晚了。",
+      "english": "Charlemagne comes back, but it is too late."
+    },
+    {
+      "n": 13,
+      "primary": "Le roi pleure son neveu et ses amis.",
+      "hanzi": "国王为他的外甥和朋友们哭泣。",
+      "english": "The king weeps for his nephew and his friends."
+    }
+  ],
+  "level": 2,
+  "length": "short",
+  "target_lines": 13,
+  "topic": "The Song of Roland, simplified",
+  "voice": "faithful",
+  "source_mode": "adaptation",
+  "notes": "",
+  "synopsis": "Roland waits too long to sound his horn at Roncevaux.",
+  "characters": [
+    {
+      "english": "Charlemagne",
+      "hanzi": "查理曼",
+      "primary": "Charlemagne"
+    },
+    {
+      "english": "Roland",
+      "hanzi": "罗兰",
+      "primary": "Roland"
+    }
+  ],
+  "provider": "Hand-written sample (Claude)",
+  "model": "-",
+  "created": "2026-10-07T15:14:03+02:00",
+  "updated": "2026-10-07T15:14:03+02:00",
+  "usage": {}
+}

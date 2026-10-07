@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Story Studio</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-track="pinyin">
+
+<div id="banner" class="banner" role="status" hidden></div>
+
+<header class="bar">
+  <div class="brand">Story Studio</div>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" data-view="create" aria-selected="true">New story</button>
+    <button role="tab" data-view="library" aria-selected="false">Library <span id="lib-count" class="count"></span></button>
+    <button role="tab" data-view="connections" aria-selected="false">Connections</button>
+  </nav>
+</header>
+
+<main>
+  <!-- ============================================================ NEW STORY -->
+  <section id="view-create" class="view">
+    <div class="workspace">
+      <form id="brief" class="panel brief" autocomplete="off">
+        <div class="field">
+          <span class="label">What is the learner practising?</span>
+          <div class="seg seg-big" id="track-seg" role="radiogroup" aria-label="Track">
+            <button type="button" role="radio" data-track="pinyin" aria-checked="true"><b>拼音</b><span>Pinyin reading</span></button>
+            <button type="button" role="radio" data-track="french" aria-checked="false"><b>Français</b><span>French reading</span></button>
+          </div>
+          <p class="hint" id="track-hint">Pinyin (bold, read aloud), hanzi (grey) and English (small italic).</p>
+        </div>
+
+        <div class="field">
+          <label class="label" for="topic">Topic</label>
+          <textarea id="topic" rows="4" placeholder="e.g. Sun Wukong and Nezha race across the sky, or: the Song of Roland in the simplest French"></textarea>
+          <div class="row-end"><button type="button" class="link" id="btn-ideas">Suggest ideas</button></div>
+        </div>
+
+        <div class="field">
+          <span class="label">Length</span>
+          <div class="seg" id="length-seg" role="radiogroup" aria-label="Length"></div>
+          <div id="custom-wrap" class="inline" hidden>
+            <label for="custom-lines">Lines</label>
+            <input id="custom-lines" type="number" min="10" max="600" value="90">
+          </div>
+          <p class="hint">One line = one numbered triple (primary + hanzi + English).</p>
+        </div>
+
+        <div class="field">
+          <label class="label" for="level">Level <output id="level-out">2</output></label>
+          <input id="level" type="range" min="1" max="5" value="2">
+          <p class="hint" id="level-hint"></p>
+        </div>
+
+        <div class="field">
+          <label class="label" for="voice">Voice</label>
+          <select id="voice"></select>
+        </div>
+
+        <div class="field">
+          <label class="label" for="source">Source</label>
+          <select id="source"></select>
+        </div>
+
+        <div class="field">
+          <label class="label" for="notes">Notes for the writer <span class="opt">optional</span></label>
+          <input id="notes" type="text" placeholder="e.g. end on a quiet image; reuse the word 云">
+        </div>
+
+        <div class="field two">
+          <div>
+            <label class="label" for="provider">AI</label>
+            <select id="provider"></select>
+          </div>
+          <div>
+            <label class="label" for="model">Model</label>
+            <input id="model" type="text" list="model-list" placeholder="default">
+            <datalist id="model-list"></datalist>
+          </div>
+        </div>
+
+        <button type="submit" class="primary" id="btn-generate">Write the story</button>
+        <p class="error" id="brief-error" role="alert" hidden></p>
+      </form>
+
+      <aside class="side" aria-live="polite">
+        <div id="side-empty" class="panel quiet">
+          <h2>Not sure what to write?</h2>
+          <p>Describe a mood, a character or a place in the topic box, or leave it empty, then choose <em>Suggest ideas</em>. Pick one and it fills the form for you.</p>
+        </div>
+
+        <div id="side-ideas" class="panel" hidden>
+          <div class="panel-head"><h2>Ideas</h2><button type="button" class="link" id="btn-ideas-more">Suggest more</button></div>
+          <ul id="ideas-list" class="ideas"></ul>
+        </div>
+
+        <div id="side-progress" class="panel" hidden>
+          <h2 id="prog-title">Writing</h2>
+          <div class="bar-track"><div class="bar-fill" id="prog-fill"></div></div>
+          <p id="prog-msg" class="prog-msg"></p>
+          <p id="prog-lines" class="hint"></p>
+          <button type="button" class="ghost" id="btn-cancel">Cancel</button>
+        </div>
+
+        <div id="side-error" class="panel err" hidden>
+          <h2>That did not work</h2>
+          <p id="side-error-msg"></p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ============================================================ LIBRARY -->
+  <section id="view-library" class="view" hidden>
+    <div class="lib-head">
+      <h1>Library</h1>
+      <input id="lib-filter" type="search" placeholder="Filter by title or topic" aria-label="Filter stories">
+    </div>
+    <ul id="lib-list" class="lib"></ul>
+    <p id="lib-empty" class="quiet-text" hidden>No stories yet. Write the first one from <em>New story</em>.</p>
+  </section>
+
+  <!-- ============================================================ STORY -->
+  <section id="view-story" class="view" hidden>
+    <div class="story-top">
+      <button class="link" id="btn-back">&larr; Library</button>
+      <div class="story-actions">
+        <span id="save-state" class="save-state"></span>
+        <button class="ghost" id="btn-save" disabled>Save changes</button>
+        <a class="ghost btn" id="btn-pdf" href="#">Preview PDF</a>
+        <a class="primary btn" id="btn-pdf-dl" href="#">Download PDF</a>
+        <details class="more">
+          <summary aria-label="More actions">More</summary>
+          <div class="menu">
+            <a id="btn-json" href="#">Download data (JSON)</a>
+            <button id="btn-delete" class="danger">Delete story</button>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <header class="story-title" id="story-title"></header>
+    <div class="story-meta" id="story-meta"></div>
+
+    <div class="check-bar" id="check-bar"></div>
+    <ol id="story-lines" class="reader"></ol>
+  </section>
+
+  <!-- ============================================================ CONNECTIONS -->
+  <section id="view-connections" class="view" hidden>
+    <h1>Connections</h1>
+    <p class="lead">Story Studio talks to an AI service you choose. The keys are kept by the server that runs the backend (the <code>.env</code> file when you run it on your computer, the Modal secret when it runs in the cloud) and are never sent to this web page. After changing a key, restart or redeploy the backend.</p>
+    <ul id="providers" class="providers"></ul>
+  </section>
+</main>
+
+<dialog id="pw-dialog" class="pw">
+  <form method="dialog" id="pw-form">
+    <h2>Password</h2>
+    <p class="hint">This Story Studio is private. Enter the password you set on the server. It is remembered on this device only.</p>
+    <input id="pw-input" type="password" autocomplete="current-password" aria-label="Password" required>
+    <p class="error" id="pw-error" role="alert" hidden>That password was not accepted. Try again.</p>
+    <button type="submit" class="primary">Unlock</button>
+  </form>
+</dialog>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic>=2.6
+httpx>=0.27
+reportlab>=4.0
+pypinyin>=0.51
+opencc-python-reimplemented>=0.1.7
+anthropic>=0.60
+
+# Optional: nicer word grouping when pinyin has to be rebuilt from hanzi (pip install jieba)
+# Optional: only for tools/build_cjk_font.py (rebuilding the bundled font): fonttools
+# Optional: to run the tests: pytest
