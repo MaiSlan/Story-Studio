@@ -56,19 +56,26 @@ Do it in this order, because each step gives you an address the next one needs.
 
 **B. API on Modal**
 1. Create an account at modal.com (the free Starter plan includes monthly credits and asks for no card at the time of writing).
-2. In a terminal, from this repository:
+2. In a terminal (PowerShell is fine), install the tools. If the `modal` command is later "not recognized" (common on
+   Windows when pip installs to the user folder), type `python -m modal` instead of `modal` everywhere below.
    ```bash
-   pip install modal
-   modal setup
-   modal secret create story-studio \
-     GEMINI_API_KEY=... GROQ_API_KEY=... \
-     APP_PASSWORD=pick-a-long-password \
-     ALLOWED_ORIGINS=https://story-studio-xyz.vercel.app
-   cd backend
-   modal deploy modal_app.py
+   pip install modal python-dotenv
+   modal setup                          # signs you in, opens the browser
+   ```
+3. In the `backend` folder, create a file named `modal.env` (it is git-ignored and never uploaded) with:
+   ```
+   GEMINI_API_KEY=...
+   GROQ_API_KEY=...
+   APP_PASSWORD=pick-a-long-password
+   ALLOWED_ORIGINS=https://story-studio-xyz.vercel.app
    ```
    Leave out any key you do not have. `ALLOWED_ORIGINS` is the Vercel address from step A (no trailing slash).
-3. Modal prints the API address, e.g. `https://yourname--story-studio-web.modal.run`.
+   Then, still in `backend`:
+   ```bash
+   modal secret create story-studio --from-dotenv modal.env --force
+   modal deploy modal_app.py
+   ```
+4. Modal prints the API address, e.g. `https://yourname--story-studio-web.modal.run`.
 
 **C. Connect them**
 Edit `frontend/config.js`, set `window.STORY_STUDIO_API = "https://yourname--story-studio-web.modal.run";`, commit and
