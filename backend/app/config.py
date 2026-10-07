@@ -5,6 +5,7 @@ your machine except in the calls to the AI provider you choose.
 """
 from __future__ import annotations
 
+import hashlib
 import os
 import shutil
 from dataclasses import dataclass
@@ -17,6 +18,16 @@ PDF_DIR = DATA_DIR / "pdf"
 STYLE_DIR = ROOT / "style"
 FONT_DIR = ROOT / "fonts"
 FRONTEND_DIR = Path(os.environ.get("FRONTEND_DIR", ROOT.parent / "frontend"))  # only served when it exists
+
+
+def build_id() -> str:
+    """A short fingerprint of the code and the style guides actually running.
+    /api/health reports it, so you can tell at a glance whether a deploy really picked up your changes."""
+    h = hashlib.sha256()
+    for f in sorted(list((ROOT / "app").rglob("*.py")) + list(STYLE_DIR.glob("*.md"))):
+        h.update(f.name.encode("utf-8"))
+        h.update(f.read_bytes())
+    return h.hexdigest()[:10]
 
 
 def _load_dotenv(path: Path) -> None:

@@ -41,10 +41,13 @@ def restore_api():
 
 def test_bearer_password_and_open_health(monkeypatch, restore_api):
     c = TestClient(_fresh_app(monkeypatch, APP_PASSWORD="s3cret"))
-    assert c.get("/api/health").json() == {"ok": True, "password_required": True}  # no password needed
+    health = c.get("/api/health")
+    assert health.json()["ok"] is True and health.json()["password_required"] is True  # no password needed
+    assert len(health.json()["build"]) == 10  # tells you which code a server is really running
     assert c.get("/api/config").status_code == 401
     assert c.get("/api/config", headers={"Authorization": "Bearer nope"}).status_code == 401
-    assert c.get("/api/config", headers={"Authorization": "Bearer s3cret"}).status_code == 200
+    ok = c.get("/api/config", headers={"Authorization": "Bearer s3cret"})
+    assert ok.status_code == 200 and ok.headers["cache-control"] == "no-store"  # never serve a stale provider list
     assert c.get("/api/config", auth=("me", "s3cret")).status_code == 200  # curl-style Basic still works
     assert "www-authenticate" not in c.get("/api/config").headers          # no browser pop-up in the web app
     assert c.get("/api/config", headers={"Authorization": "Bearer h\u00e9llo".encode("latin-1")}).status_code == 401  # odd bytes must not crash

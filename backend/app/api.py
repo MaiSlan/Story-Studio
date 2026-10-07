@@ -18,6 +18,7 @@ from .config import (
     FRONTEND_DIR,
     PDF_DIR,
     PROVIDERS,
+    build_id,
     default_provider_id,
 )
 from .generator import generate_ideas
@@ -52,7 +53,11 @@ async def password_gate(request: Request, call_next):
     protected = path.startswith("/api/") and path != "/api/health" and request.method != "OPTIONS"
     if APP_PASSWORD and protected and not _password_ok(request):
         return JSONResponse({"detail": "Password required"}, status_code=401)
-    return await call_next(request)
+    response = await call_next(request)
+    if path.startswith("/api/"):
+        # Never let a browser serve a cached answer: after a redeploy the model list and settings change.
+        response.headers["Cache-Control"] = "no-store"
+    return response
 
 
 # Added after the gate so it is the outermost layer: even 401 answers carry CORS headers.
@@ -68,10 +73,14 @@ if ALLOWED_ORIGINS or ALLOWED_ORIGIN_REGEX:
     )
 
 
+BUILD = build_id()
+
+
 @app.get("/api/health")
 def health():
-    """No password: lets the UI wake a sleeping server and tell 'offline' from 'wrong password'."""
-    return {"ok": True, "password_required": bool(APP_PASSWORD)}
+    """No password: lets the UI wake a sleeping server, tell 'offline' from 'wrong password',
+    and show which build of the code is actually deployed."""
+    return {"ok": True, "password_required": bool(APP_PASSWORD), "build": BUILD}
 
 
 def _story_or_404(story_id: str):
