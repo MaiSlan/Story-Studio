@@ -8,7 +8,7 @@ from __future__ import annotations
 import hashlib
 import os
 import shutil
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -66,6 +66,7 @@ class ProviderSpec:
     model_suggestions: tuple[str, ...] = ()
     note: str = ""
     max_tokens_factor: float = 1.0  # >1 for "thinking" models whose reasoning counts against max_tokens
+    extra_params: dict = field(default_factory=dict)  # extra JSON fields for this service (dropped if it rejects them)
 
     def api_key(self) -> str | None:
         return os.environ.get(self.key_env) if self.key_env else None
@@ -127,6 +128,8 @@ PROVIDERS: dict[str, ProviderSpec] = {
             default_model="openai/gpt-oss-120b",
             base_url="https://api.groq.com/openai/v1",
             model_suggestions=("openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.8-27b"),
+            # gpt-oss "thinks" before answering, and that thinking eats the free tier's 8k tokens a minute.
+            extra_params={"reasoning_effort": "low"},
             note="Groq (with a Q) hosts open models very fast. Its free tier dropped the Llama models in August 2026; gpt-oss-120b is the strongest one still free. Free limits are low (about 8k tokens a minute), so long stories pause between parts. Model names change: check console.groq.com/docs/models.",
         ),
         ProviderSpec(

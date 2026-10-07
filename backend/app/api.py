@@ -128,7 +128,8 @@ def test_provider(body: dict):
     try:
         provider = get_provider(body.get("provider", ""), body.get("model"))
         t0 = time.time()
-        res = provider.complete("Reply with JSON only.", 'Return exactly {"ok": true}', max_tokens=30, temperature=0, json_mode=True)
+        # Enough room for a model that "thinks" first: 30 tokens made reasoning models fail this test.
+        res = provider.complete("Reply with JSON only.", 'Return exactly {"ok": true}', max_tokens=512, temperature=0, json_mode=True)
         return {"ok": True, "model": provider.model, "seconds": round(time.time() - t0, 1), "reply": res.text[:80]}
     except LLMError as exc:
         return {"ok": False, "error": str(exc)}

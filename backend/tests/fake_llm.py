@@ -38,6 +38,15 @@ def build_app(log: list, behaviour: dict) -> FastAPI:
             return JSONResponse({"error": "slow down"}, status_code=429, headers={"retry-after": "0"})
         if behaviour.get("openai_reject_response_format") and "response_format" in body:
             return JSONResponse({"error": {"message": "response_format is not supported"}}, status_code=400)
+        if behaviour.get("openai_reject_reasoning_effort") and "reasoning_effort" in body:
+            return JSONResponse({"error": {"message": "Unrecognized request argument: reasoning_effort"}}, status_code=400)
+        if behaviour.get("openai_json_validate_failed") and "response_format" in body:
+            # What Groq's gpt-oss returns when the whole token budget went into reasoning.
+            return JSONResponse(
+                {"error": {"message": "Failed to validate JSON. Please adjust your prompt.",
+                           "code": "json_validate_failed", "failed_generation": ""}},
+                status_code=400,
+            )
         user = body["messages"][1]["content"]
         out = _brain.complete("", user)
         return {"choices": [{"message": {"role": "assistant", "content": out.text}}],

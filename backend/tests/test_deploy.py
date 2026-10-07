@@ -139,6 +139,51 @@ def test_daily_limit_fails_fast_instead_of_retrying(monkeypatch):
     assert len(calls) == 1
 
 
+def test_groq_sends_low_reasoning_effort_and_survives_a_picky_endpoint():
+    with FakeServer(8793) as fake:
+        base = f"http://127.0.0.1:{fake.port}/v1"
+        prov = OpenAICompatProvider("Groq", "openai/gpt-oss-120b", base, "k", 1.0, {"reasoning_effort": "low"})
+        prov.complete("S", "TASK: ideas\nTRACK: french\nCOUNT: 2\n")
+        assert [b for k, h, b in fake.log][-1]["reasoning_effort"] == "low"  # saves the free tier's tokens
+
+        # An endpoint that does not know the parameter must not break the app.
+        fake.behaviour["openai_reject_reasoning_effort"] = True
+        prov.complete("S", "TASK: ideas\nTRACK: french\nCOUNT: 2\n")
+        assert "reasoning_effort" not in [b for k, h, b in fake.log][-1]
+
+
+def test_json_validate_failed_falls_back_to_plain_text():
+    """Groq rejects a thinking model's empty output in JSON mode; our own parser can read plain text."""
+    with FakeServer(8794) as fake:
+        fake.behaviour["openai_json_validate_failed"] = True
+        res = OpenAICompatProvider("Groq", "openai/gpt-oss-120b", f"http://127.0.0.1:{fake.port}/v1", "k").complete(
+            "S", "TASK: ideas\nTRACK: french\nCOUNT: 2\n"
+        )
+        assert '"ideas"' in res.text
+        sent = [b for k, h, b in fake.log]
+        assert "response_format" in sent[0] and "response_format" not in sent[-1]
+
+
+def test_connection_test_gives_a_thinking_model_room_to_answer(monkeypatch):
+    """30 tokens was not enough for a model that reasons before answering; it returned nothing at all."""
+    import app.api as api
+    from app.providers.base import LLMResult
+
+    seen = {}
+
+    class Recorder:
+        model = "openai/gpt-oss-120b"
+
+        def complete(self, system, user, **kw):
+            seen.update(kw)
+            return LLMResult(text='{"ok": true}')
+
+    monkeypatch.setattr(api, "get_provider", lambda *a, **k: Recorder())
+    r = TestClient(api.app).post("/api/providers/test", json={"provider": "groq"})
+    assert r.json()["ok"] is True
+    assert seen["max_tokens"] >= 256
+
+
 def test_gemini_preset_and_default_choice(monkeypatch):
     for k in ("ANTHROPIC_API_KEY", "GROQ_API_KEY", "OPENAI_API_KEY", "XAI_API_KEY", "OPENROUTER_API_KEY", "DEFAULT_PROVIDER"):
         monkeypatch.delenv(k, raising=False)

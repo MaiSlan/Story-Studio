@@ -36,7 +36,9 @@ def get_provider(provider_id: str, model: str | None = None) -> Provider:
     if spec.kind == "openai":
         from .openai_compat import OpenAICompatProvider
 
-        return OpenAICompatProvider(spec.label, chosen_model, spec.url() or "", spec.api_key(), spec.max_tokens_factor)
+        return OpenAICompatProvider(
+            spec.label, chosen_model, spec.url() or "", spec.api_key(), spec.max_tokens_factor, spec.extra_params
+        )
 
     raise LLMError(f"Provider kind '{spec.kind}' is not supported.")
 

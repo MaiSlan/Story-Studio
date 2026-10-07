@@ -11,9 +11,11 @@ class OpenAICompatProvider(Provider):
     """Works with anything that speaks the OpenAI "chat completions" protocol:
     Groq, OpenAI, xAI, OpenRouter, Together, Mistral, a local Ollama or LM Studio server, ..."""
 
-    def __init__(self, label: str, model: str, base_url: str, api_key: str | None, max_tokens_factor: float = 1.0):
+    def __init__(self, label: str, model: str, base_url: str, api_key: str | None, max_tokens_factor: float = 1.0,
+                 extra_params: dict | None = None):
         super().__init__(label, model)
         self.max_tokens_factor = max_tokens_factor
+        self.extra_params = dict(extra_params or {})
         self.base_url = base_url.rstrip("/")
         self.api_key = api_key
 
@@ -27,6 +29,7 @@ class OpenAICompatProvider(Provider):
             "temperature": temperature,
             "max_tokens": int(max_tokens * self.max_tokens_factor),
         }
+        payload.update(self.extra_params)
         if json_mode:
             payload["response_format"] = {"type": "json_object"}
         headers = {"Content-Type": "application/json"}
@@ -67,6 +70,17 @@ class OpenAICompatProvider(Provider):
                 raise LLMError(f"{self.label}: model or endpoint not found ({self.model}). {body}")
             if resp.status_code == 400:
                 # Adapt once to provider quirks, then retry immediately.
+                if self.extra_params and "extras" not in adjusted and any(k in low for k in self.extra_params):
+                    for k in self.extra_params:
+                        payload.pop(k, None)
+                    adjusted.add("extras")
+                    continue
+                # "json_validate_failed" with an empty generation: a thinking model spent its whole budget
+                # on reasoning. Our own parser copes with plain text, so stop demanding strict JSON mode.
+                if "json_validate" in low.replace(" ", "_") and "response_format" in payload and "rf" not in adjusted:
+                    payload.pop("response_format")
+                    adjusted.add("rf")
+                    continue
                 if "response_format" in low and "response_format" in payload and "rf" not in adjusted:
                     payload.pop("response_format")
                     adjusted.add("rf")
