@@ -80,6 +80,9 @@ class OpenAICompatProvider(Provider):
                     adjusted.add("temp")
                     continue
                 raise LLMError(f"{self.label}: bad request. {body}")
+            if resp.status_code == 429 and ("per day" in low or "daily" in low or "rpd" in low or "tpd" in low):
+                # Waiting will not help: a free tier's daily allowance is gone until it resets.
+                raise LLMError(f"{self.label}: the free daily limit is used up; it resets tomorrow. Pick another AI for now. {body[:200]}")
             if resp.status_code == 429 or resp.status_code >= 500:
                 wait = resp.headers.get("retry-after")
                 try:

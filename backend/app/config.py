@@ -79,13 +79,16 @@ class ProviderSpec:
 
 def cli_unavailable_reason() -> str | None:
     """The 'Claude login' provider drives the Claude Code program installed on THIS computer.
-    It is only offered when the app runs on your own machine (see README: Anthropic does not allow
+    It is only offered when the backend itself runs on your own machine (see README: Anthropic does not allow
     hosted apps to route requests through a Claude subscription)."""
+    if HOSTED or HOST not in ("127.0.0.1", "localhost", "::1"):
+        return ("This backend runs in the cloud, and a Claude plan may only be used from your own computer. "
+                "To use this option, run the backend on your machine (python run.py) and open http://127.0.0.1:8000. "
+                "The other AI services work from anywhere.")
     if not shutil.which(os.environ.get("CLAUDE_BIN", "claude")):
-        return ("Claude Code is not installed on this computer. Install it from https://claude.com/product/claude-code "
-                "and sign in once by running `claude` in a terminal.")
-    if HOST not in ("127.0.0.1", "localhost", "::1"):
-        return "The Claude login option only works when the app runs on your own computer (HOST=127.0.0.1), not on a server."
+        return ("Claude Code is not installed on this computer. It is the command-line program, separate from the "
+                "Claude desktop app: install it from https://claude.com/product/claude-code, then run `claude` once "
+                "in a terminal and sign in with your Claude account.")
     return None
 
 
@@ -110,10 +113,10 @@ PROVIDERS: dict[str, ProviderSpec] = {
             kind="openai",
             key_env="GROQ_API_KEY",
             model_env="GROQ_MODEL",
-            default_model="llama-3.3-70b-versatile",
+            default_model="openai/gpt-oss-120b",
             base_url="https://api.groq.com/openai/v1",
-            model_suggestions=("openai/gpt-oss-120b", "llama-3.3-70b-versatile", "qwen/qwen3-32b"),
-            note="Groq (with a Q) hosts open models very fast, with a free tier. For better stories than the small Llama, type openai/gpt-oss-120b in the Model box (free tier limits are low: expect pauses). Model names change; check their list.",
+            model_suggestions=("openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.8-27b"),
+            note="Groq (with a Q) hosts open models very fast. Its free tier dropped the Llama models in August 2026; gpt-oss-120b is the strongest one still free. Free limits are low (about 8k tokens a minute), so long stories pause between parts. Model names change: check console.groq.com/docs/models.",
         ),
         ProviderSpec(
             id="gemini",
@@ -209,5 +212,7 @@ APP_PASSWORD = os.environ.get("APP_PASSWORD", "")
 # ALLOWED_ORIGINS=https://story-studio.vercel.app   (ALLOWED_ORIGIN_REGEX=https://.*\.vercel\.app for previews)
 ALLOWED_ORIGINS = [o.strip().rstrip("/") for o in os.environ.get("ALLOWED_ORIGINS", "").split(",") if o.strip()]
 ALLOWED_ORIGIN_REGEX = os.environ.get("ALLOWED_ORIGIN_REGEX") or None
+# Set by the Dockerfile and by modal_app.py: this process is a server, not someone's own computer.
+HOSTED = os.environ.get("HOSTED", "").strip().lower() in ("1", "true", "yes")
 HOST = os.environ.get("HOST", "127.0.0.1")
 PORT = int(os.environ.get("PORT", "8000"))

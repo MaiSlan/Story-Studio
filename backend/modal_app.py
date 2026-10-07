@@ -38,7 +38,7 @@ volume = modal.Volume.from_name("story-studio-data", create_if_missing=True)
 image = (
     modal.Image.debian_slim(python_version="3.12")
     .pip_install_from_requirements(str(HERE / "requirements.txt"))
-    .env({"STORY_DATA_DIR": "/data", "FRONTEND_DIR": "/nonexistent"})  # frontend lives on Vercel
+    .env({"STORY_DATA_DIR": "/data", "FRONTEND_DIR": "/nonexistent", "HOSTED": "1"})  # frontend lives on Vercel
     .add_local_dir(HERE, "/root/backend", ignore=lambda path: _skip_upload(path))
 )
 

@@ -113,6 +113,29 @@ def test_storage_hook_and_seed(tmp_path, monkeypatch):
 
 
 # ------------------------------------------------------------------ Gemini preset
+def test_groq_default_model_is_one_the_free_tier_still_serves(monkeypatch):
+    monkeypatch.delenv("GROQ_MODEL", raising=False)
+    # Groq removed the Llama models from the free tier in August 2026.
+    assert "llama" not in config.PROVIDERS["groq"].model()
+    assert config.PROVIDERS["groq"].model() == "openai/gpt-oss-120b"
+
+
+def test_daily_limit_fails_fast_instead_of_retrying(monkeypatch):
+    import httpx
+
+    calls = []
+
+    class Resp:
+        status_code = 429
+        headers: dict = {}
+        text = '{"error":{"message":"Rate limit reached: limit 1000 requests per day (RPD)"}}'
+
+    monkeypatch.setattr(httpx, "post", lambda *a, **k: (calls.append(1), Resp())[1])
+    with pytest.raises(LLMError, match="daily limit"):
+        OpenAICompatProvider("Groq", "m", "https://x/v1", "k").complete("S", "U")
+    assert len(calls) == 1
+
+
 def test_gemini_preset_and_default_choice(monkeypatch):
     for k in ("ANTHROPIC_API_KEY", "GROQ_API_KEY", "OPENAI_API_KEY", "XAI_API_KEY", "OPENROUTER_API_KEY", "DEFAULT_PROVIDER"):
         monkeypatch.delenv(k, raising=False)
@@ -205,6 +228,13 @@ def test_claude_login_is_refused_on_a_public_server_or_without_claude(fake_claud
     with pytest.raises(LLMError, match="own computer"):
         get_provider("claude_code")
     assert config.PROVIDERS["claude_code"].configured() is False
+
+    # A hosted backend listens on 127.0.0.1 behind its own proxy (Modal), so HOST alone is not enough.
+    monkeypatch.setattr(config, "HOST", "127.0.0.1")
+    monkeypatch.setattr(config, "HOSTED", True)
+    with pytest.raises(LLMError, match="runs in the cloud"):
+        get_provider("claude_code")
+    monkeypatch.setattr(config, "HOSTED", False)
 
     monkeypatch.setattr(config, "HOST", "127.0.0.1")
     monkeypatch.setenv("CLAUDE_BIN", "definitely-not-installed")

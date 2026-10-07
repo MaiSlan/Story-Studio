@@ -106,7 +106,7 @@ Open **Connections** in the app and press *Test connection* after any change.
 | Option | Cost | Notes |
 |---|---|---|
 | **Google Gemini** (`GEMINI_API_KEY`) | free tier | Key at aistudio.google.com. The most capable free choice I know of for this task. On the free tier Google may use your prompts to improve its products, and daily limits apply. |
-| **Groq** (`GROQ_API_KEY`) | free tier | Very fast. The default small Llama is weak at pinyin; type `openai/gpt-oss-120b` in the *Model* box for better stories. Its free limits are low (tokens per minute and per day), so expect pauses and a few stories per day. |
+| **Groq** (`GROQ_API_KEY`) | free tier | Very fast. Groq removed the Llama models from the free tier in August 2026, so the default here is `openai/gpt-oss-120b`, the strongest one still free. Free limits are low (about 8k tokens a minute, 1000 requests a day), so a long story pauses between its parts. |
 | **Claude API** (`ANTHROPIC_API_KEY`) | pay per use | Key from console.anthropic.com. **A claude.ai Pro/Max subscription does not include API access**; the API is a separate account. Roughly 10 to 20 US cents for a 130-line story at the Sonnet 5.5 price in Anthropic's docs ($2 / $10 per million tokens): an estimate, and each story page shows the real token count. |
 | **Ollama** | free | Models on your own computer (`ollama pull qwen2.5:14b`). More pinyin mistakes; the checker flags them. Local only. |
 | OpenAI, xAI, OpenRouter | pay per use | Listed too; any service speaking the "OpenAI chat" protocol can be added in six lines in `backend/app/config.py`. |
@@ -118,8 +118,12 @@ stories: the error count is shown at the top of each one.
 ### Using your Claude account instead of an API key (local only)
 
 On your own computer you can pick **"Claude via your Claude app login"**. The app then runs Anthropic's own
-Claude Code program (`claude -p ...`) for each request, using the plan you are signed in with. Setup: install Claude Code,
-run `claude` once and sign in, then start the app with `python run.py`.
+Claude Code program (`claude -p ...`) for each request, using the plan you are signed in with.
+
+Claude Code is the **command-line** program, which is not the same thing as the Claude desktop app: having the desktop app
+does not make this option work. Setup: install Claude Code from <https://claude.com/product/claude-code>, run `claude`
+once in a terminal and sign in, then start the backend on your own machine with `python run.py` and open
+<http://127.0.0.1:8000>. The option stays greyed out on the Vercel site, because that page talks to the cloud backend.
 
 Limits you should know about:
 * It counts against your plan's usage limits and is slower than the API.
